@@ -1,34 +1,28 @@
-
-
 fn main() {
-
     fn is_valid(passport: &str) -> bool {
-    let required_fields = vec!["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid" ];
-         let mut i = 0;
-         let mut valid_fields: u32 = 0;
-         while i < required_fields.len() {
+        let required_fields = vec!["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"];
+        let mut i = 0;
+        let mut valid_fields: u32 = 0;
+        while i < required_fields.len() {
             match passport.find(required_fields[i]) {
                 Some(_x) => {
                     valid_fields = valid_fields + 1;
                 }
-                None => {
-                }
+                None => {}
             }
-            i = i +1;
-         }
-         return valid_fields == 7;
+            i = i + 1;
+        }
+        return valid_fields == 7;
     };
-    
     fn number_valid_passports(passports: &str) -> u32 {
         let passports_vec: Vec<String> = passports.split("\n\n").map(|s| s.to_string()).collect();
         let mut i = 0;
         let mut number_valid = 0;
-         while i < passports_vec.len() {
+        while i < passports_vec.len() {
             if is_valid(&passports_vec[i]) {
-
                 number_valid = number_valid + 1;
             }
-            i = i +1;
+            i = i + 1;
         }
 
         return number_valid;
@@ -46,9 +40,9 @@ hgt:179cm
 
 hcl:#cfa07d eyr:2025 pid:166559648
 iyr:2011 ecl:brn hgt:59in";
-assert_eq!(number_valid_passports(test), 2);
+    assert_eq!(number_valid_passports(test), 2);
 
-let input = "ecl:hzl byr:1926 iyr:2010
+    let input = "ecl:hzl byr:1926 iyr:2010
 pid:221225902 cid:61 hgt:186cm eyr:2021 hcl:#7d3b0c
 
 hcl:#efcc98 hgt:178 pid:433543520
@@ -1185,7 +1179,5 @@ byr:2000
 ecl:hzl eyr:2029
 iyr:2011 hcl:#866857 hgt:74in";
 
-println!("number valid passports {}", number_valid_passports(input))
+    println!("number valid passports {}", number_valid_passports(input))
 }
-
-

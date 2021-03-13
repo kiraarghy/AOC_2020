@@ -3,50 +3,60 @@ use lazy_static::lazy_static;
 use regex::Regex;
 
 struct Parsed {
-    min: u32,
-    max: u32,
-    letter: char,
-    password: String,
+  min: u32,
+  max: u32,
+  letter: char,
+  password: String,
 }
 
-
-
 fn main() {
-    fn test(text: &str) -> bool {
-        lazy_static! {
-          static ref RE: Regex = Regex::new(r"(^\d*)-(\d*) ([a-z]): ([a-z]*)").unwrap();
+  fn test(text: &str) -> bool {
+    lazy_static! {
+      static ref RE: Regex = Regex::new(r"(^\d*)-(\d*) ([a-z]): ([a-z]*)").unwrap();
+    };
+    match RE.captures(text) {
+      Some(x) => {
+        let caps = x;
+        let test_value = Parsed {
+          min: caps
+            .get(1)
+            .map_or("", |m| m.as_str())
+            .parse::<u32>()
+            .unwrap(),
+          max: caps
+            .get(2)
+            .map_or("", |m| m.as_str())
+            .parse::<u32>()
+            .unwrap(),
+          letter: caps
+            .get(3)
+            .map_or("", |m| m.as_str())
+            .chars()
+            .nth(0)
+            .unwrap(),
+          password: caps.get(4).map_or("", |m| m.as_str()).to_string(),
         };
-        match RE.captures(text) {
-          Some(x) => {
-              let caps = x;
-              let test_value =  Parsed {min: caps.get(1).map_or("", |m| m.as_str()).parse::<u32>().unwrap(), 
-                  max: caps.get(2).map_or("", |m| m.as_str()).parse::<u32>().unwrap(),
-                  letter: caps.get(3).map_or("", |m| m.as_str()).chars().nth(0).unwrap(),
-                  password: caps.get(4).map_or("", |m| m.as_str()).to_string()
-              };
-              let mut number_of_characters = 0;
-              let mut j = 0;
-              let pass_vector: Vec<char> = test_value.password.chars().collect();
-              while j < test_value.password.len() {
-                  if pass_vector[j] == test_value.letter {
-                      number_of_characters = number_of_characters + 1;
-                  }
-                  j = j + 1; 
-              }
-              if number_of_characters >= test_value.min && number_of_characters <= test_value.max {
-                  return true;
-              }
-              else {
-                  return false;
-              }
-          },
-          None    => {return false;}
+        let mut number_of_characters = 0;
+        let mut j = 0;
+        let pass_vector: Vec<char> = test_value.password.chars().collect();
+        while j < test_value.password.len() {
+          if pass_vector[j] == test_value.letter {
+            number_of_characters = number_of_characters + 1;
+          }
+          j = j + 1;
         }
+        if number_of_characters >= test_value.min && number_of_characters <= test_value.max {
+          return true;
+        } else {
+          return false;
+        }
+      }
+      None => {
+        return false;
+      }
     }
-  let test_vec = vec!["1-3 a: abcde",
-    "1-3 b: cdefg",
-    "2-9 c: ccccccccc"
-  ];
+  }
+  let test_vec = vec!["1-3 a: abcde", "1-3 b: cdefg", "2-9 c: ccccccccc"];
   assert_eq!(test(test_vec[0]), true);
   assert_eq!(test(test_vec[1]), false);
   assert_eq!(test(test_vec[2]), true);
@@ -1052,16 +1062,15 @@ fn main() {
     "3-8 t: wttlmpdkfkf",
     "6-7 s: xsvmsds",
     "6-7 n: jbncncnn",
-    ""
+    "",
   ];
   let mut correct = 0;
   let mut i = 0;
-    while i < x.len() {
-          if test(x[i]) {
-              correct = correct + 1
-          }
-          i = i + 1;
-      }
-      println!("{} of the passwords are correct", correct)
+  while i < x.len() {
+    if test(x[i]) {
+      correct = correct + 1
+    }
+    i = i + 1;
+  }
+  println!("{} of the passwords are correct", correct)
 }
-

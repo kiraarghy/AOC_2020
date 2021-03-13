@@ -1,28 +1,33 @@
 use regex::RegexSet;
 
 fn main() {
-
     fn is_valid(passport: &str) -> bool {
-        let regexes = RegexSet::new(&[r"(byr:)\s*(19[2-9]\d|200[0-2])", 
-        r"(iyr:)\s*(201\d|2020)", 
-        r"(eyr:)\s*(202\d|2030)", 
-        r"(hgt:)\s*(((59|6\d|7[0-6])in)|((1[5-8]\d|19[0-3])cm))", 
-        r"(hcl:)\s*(#[0-9a-f]{6})\b", 
-        r"(ecl:)\s*(amb|blu|brn|gry|grn|hzl|oth)", 
-        r"(pid:)\s*(\d{9})\b"]).unwrap();
-        return regexes.matches(passport).into_iter().collect::<Vec<usize>>().len() == 7;
+        let regexes = RegexSet::new(&[
+            r"(byr:)\s*(19[2-9]\d|200[0-2])",
+            r"(iyr:)\s*(201\d|2020)",
+            r"(eyr:)\s*(202\d|2030)",
+            r"(hgt:)\s*(((59|6\d|7[0-6])in)|((1[5-8]\d|19[0-3])cm))",
+            r"(hcl:)\s*(#[0-9a-f]{6})\b",
+            r"(ecl:)\s*(amb|blu|brn|gry|grn|hzl|oth)",
+            r"(pid:)\s*(\d{9})\b",
+        ])
+        .unwrap();
+        return regexes
+            .matches(passport)
+            .into_iter()
+            .collect::<Vec<usize>>()
+            .len()
+            == 7;
     }
-    
     fn number_valid_passports(passports: &str) -> u32 {
         let passports_vec: Vec<String> = passports.split("\n\n").map(|s| s.to_string()).collect();
         let mut i = 0;
         let mut number_valid = 0;
-         while i < passports_vec.len() {
+        while i < passports_vec.len() {
             if is_valid(&passports_vec[i]) {
-
                 number_valid = number_valid + 1;
             }
-            i = i +1;
+            i = i + 1;
         }
         return number_valid;
     }
@@ -38,9 +43,9 @@ pid:545766238 ecl:hzl
 eyr:2022
 
 iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719";
-assert_eq!(number_valid_passports(test), 4);
+    assert_eq!(number_valid_passports(test), 4);
 
-let negtest = "eyr:1972 cid:100
+    let negtest = "eyr:1972 cid:100
 hcl:#18171d ecl:amb hgt:170 pid:186cm iyr:2018 byr:1926
 
 iyr:2019
@@ -54,10 +59,9 @@ hgt:59cm ecl:zzz
 eyr:2038 hcl:74454a iyr:2023
 pid:3556412378 byr:2007";
 
-assert_eq!(number_valid_passports(negtest), 0);
+    assert_eq!(number_valid_passports(negtest), 0);
 
-
-let input = "ecl:hzl byr:1926 iyr:2010
+    let input = "ecl:hzl byr:1926 iyr:2010
 pid:221225902 cid:61 hgt:186cm eyr:2021 hcl:#7d3b0c
 
 hcl:#efcc98 hgt:178 pid:433543520
@@ -1196,6 +1200,5 @@ iyr:2011 hcl:#866857 hgt:74in
 
 ";
 
-println!("number valid passports {}", number_valid_passports(input))
+    println!("number valid passports {}", number_valid_passports(input))
 }
-
