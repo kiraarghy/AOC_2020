@@ -18,6 +18,7 @@ fn main() {
     let groups: Vec<&str> = input.split("\n\n").collect();
     for str in groups {
       let people = str.lines();
+      // could use a try_fold
       let string_vec_of_people = people.collect::<Vec<&str>>();
       score = score
         + string_vec_of_people
@@ -26,6 +27,9 @@ fn main() {
           .fold(vec![], |acc, (i, x)| {
             if i == 0 {
               return x.chars().collect();
+            }
+            if acc == vec![] {
+              return acc;
             } else {
               return intersect_of_ver(acc, x.chars().collect());
             }
